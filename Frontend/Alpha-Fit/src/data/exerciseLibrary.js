@@ -1,0 +1,238 @@
+const exerciseLibrary = {
+  chest: [
+    {
+      name: "Bench Press",
+      muscleGroup: "Pectoralis Major",
+      difficulty: "intermediate",
+      description: "King of chest exercises. Lie flat, lower the bar to mid-chest, press up.",
+      alternatives: ["Dumbbell Bench Press", "Machine Chest Press", "Push-Ups"],
+    },
+    {
+      name: "Incline Bench Press",
+      muscleGroup: "Upper Chest",
+      difficulty: "intermediate",
+      description: "Targets the upper chest. Set bench to 30–45°.",
+      alternatives: ["Incline Dumbbell Press", "Cable Fly High"],
+    },
+    {
+      name: "Decline Bench Press",
+      muscleGroup: "Lower Chest",
+      difficulty: "intermediate",
+      description: "Targets the lower chest. Set bench to a slight decline.",
+      alternatives: ["Decline Dumbbell Press", "Dips"],
+    },
+    {
+      name: "Dumbbell Fly",
+      muscleGroup: "Pectoralis Major",
+      difficulty: "beginner",
+      description: "Wide arc motion that stretches and contracts the chest.",
+      alternatives: ["Cable Fly", "Pec Deck"],
+    },
+    {
+      name: "Dips",
+      muscleGroup: "Lower Chest / Triceps",
+      difficulty: "intermediate",
+      description: "Bodyweight compound. Lean forward to bias the chest.",
+      alternatives: ["Assisted Dips", "Decline Push-Ups"],
+    },
+  ],
+
+  back: [
+    {
+      name: "Pull-Ups",
+      muscleGroup: "Latissimus Dorsi",
+      difficulty: "intermediate",
+      description: "The gold-standard back builder. Full dead hang to chin-over-bar.",
+      alternatives: ["Lat Pulldown", "Assisted Pull-Ups"],
+    },
+    {
+      name: "Barbell Row",
+      muscleGroup: "Mid Back / Lats",
+      difficulty: "intermediate",
+      description: "Hinge at the hips, row the bar to the lower chest. Keep back flat.",
+      alternatives: ["Dumbbell Row", "T-Bar Row"],
+    },
+    {
+      name: "Lat Pulldown",
+      muscleGroup: "Latissimus Dorsi",
+      difficulty: "beginner",
+      description: "Cable machine pull. Great for developing lat width.",
+      alternatives: ["Pull-Ups", "Straight-Arm Pulldown"],
+    },
+    {
+      name: "Seated Cable Row",
+      muscleGroup: "Mid Back / Rhomboids",
+      difficulty: "beginner",
+      description: "Horizontal pull. Squeeze shoulder blades at the end.",
+      alternatives: ["Dumbbell Row", "Machine Row"],
+    },
+    {
+      name: "Deadlift",
+      muscleGroup: "Full Back / Posterior Chain",
+      difficulty: "advanced",
+      description: "The king of all lifts. Engages the entire posterior chain.",
+      alternatives: ["Romanian Deadlift", "Trap Bar Deadlift"],
+    },
+  ],
+
+  legs: [
+    {
+      name: "Squat",
+      muscleGroup: "Quadriceps / Glutes",
+      difficulty: "intermediate",
+      description: "The king of leg exercises. Drive knees out, chest up.",
+      alternatives: ["Leg Press", "Goblet Squat"],
+    },
+    {
+      name: "Romanian Deadlift",
+      muscleGroup: "Hamstrings / Glutes",
+      difficulty: "intermediate",
+      description: "Hip-hinge dominant. Feel the hamstring stretch at the bottom.",
+      alternatives: ["Leg Curl", "Good Morning"],
+    },
+    {
+      name: "Leg Press",
+      muscleGroup: "Quadriceps / Glutes",
+      difficulty: "beginner",
+      description: "Machine-based squat alternative. Easier on lower back.",
+      alternatives: ["Squat", "Hack Squat"],
+    },
+    {
+      name: "Walking Lunges",
+      muscleGroup: "Quadriceps / Glutes",
+      difficulty: "beginner",
+      description: "Unilateral movement. Great for balance and hypertrophy.",
+      alternatives: ["Reverse Lunges", "Split Squat"],
+    },
+    {
+      name: "Leg Curl",
+      muscleGroup: "Hamstrings",
+      difficulty: "beginner",
+      description: "Isolation machine exercise for hamstring development.",
+      alternatives: ["Romanian Deadlift", "Nordic Curl"],
+    },
+    {
+      name: "Calf Raises",
+      muscleGroup: "Gastrocnemius / Soleus",
+      difficulty: "beginner",
+      description: "Stand on a step, raise up on toes, lower slowly.",
+      alternatives: ["Seated Calf Raise", "Donkey Calf Raise"],
+    },
+  ],
+
+  shoulders: [
+    {
+      name: "Overhead Press",
+      muscleGroup: "Deltoids / Triceps",
+      difficulty: "intermediate",
+      description: "Stand or sit, press the barbell from shoulder height overhead.",
+      alternatives: ["Dumbbell Shoulder Press", "Arnold Press"],
+    },
+    {
+      name: "Arnold Press",
+      muscleGroup: "All Three Deltoid Heads",
+      difficulty: "intermediate",
+      description: "Rotating dumbbell press invented by Arnold Schwarzenegger.",
+      alternatives: ["Dumbbell Shoulder Press", "Overhead Press"],
+    },
+    {
+      name: "Lateral Raises",
+      muscleGroup: "Medial Deltoid",
+      difficulty: "beginner",
+      description: "Raise dumbbells to the sides to shoulder height.",
+      alternatives: ["Cable Lateral Raise", "Machine Lateral Raise"],
+    },
+    {
+      name: "Front Raises",
+      muscleGroup: "Anterior Deltoid",
+      difficulty: "beginner",
+      description: "Raise in front of the body to shoulder height.",
+      alternatives: ["Plate Front Raise", "Cable Front Raise"],
+    },
+    {
+      name: "Rear Delt Fly",
+      muscleGroup: "Posterior Deltoid",
+      difficulty: "beginner",
+      description: "Bend forward, raise dumbbells to rear. Targets rear delts.",
+      alternatives: ["Reverse Pec Deck", "Face Pulls"],
+    },
+  ],
+
+  arms: [
+    {
+      name: "Barbell Curl",
+      muscleGroup: "Biceps",
+      difficulty: "beginner",
+      description: "Classic bicep builder. Supinate the wrist at the top.",
+      alternatives: ["Dumbbell Curl", "EZ-Bar Curl"],
+    },
+    {
+      name: "Hammer Curl",
+      muscleGroup: "Brachialis / Biceps",
+      difficulty: "beginner",
+      description: "Neutral grip curl. Builds arm thickness and brachialis.",
+      alternatives: ["Rope Hammer Curl", "Cross-Body Hammer Curl"],
+    },
+    {
+      name: "Tricep Pushdown",
+      muscleGroup: "Triceps",
+      difficulty: "beginner",
+      description: "Cable pushdown. Keep elbows pinned to your sides.",
+      alternatives: ["Overhead Tricep Extension", "Skull Crushers"],
+    },
+    {
+      name: "Skull Crushers",
+      muscleGroup: "Triceps (Long Head)",
+      difficulty: "intermediate",
+      description: "Lower the bar or dumbbell to your forehead, press up.",
+      alternatives: ["Tricep Pushdown", "Dips"],
+    },
+    {
+      name: "Concentration Curl",
+      muscleGroup: "Biceps Peak",
+      difficulty: "beginner",
+      description: "Seated, elbow on inner thigh. Maximum bicep isolation.",
+      alternatives: ["Preacher Curl", "Cable Curl"],
+    },
+  ],
+
+  core: [
+    {
+      name: "Plank",
+      muscleGroup: "Transverse Abdominis / Core",
+      difficulty: "beginner",
+      description: "Hold a rigid body position. Don't let hips sag.",
+      alternatives: ["Dead Bug", "Ab Wheel Rollout"],
+    },
+    {
+      name: "Cable Crunch",
+      muscleGroup: "Rectus Abdominis",
+      difficulty: "beginner",
+      description: "Kneel at a cable machine and crunch the weight down.",
+      alternatives: ["Decline Crunch", "Weighted Sit-Up"],
+    },
+    {
+      name: "Hanging Leg Raise",
+      muscleGroup: "Lower Abs / Hip Flexors",
+      difficulty: "intermediate",
+      description: "Hang from a bar, raise legs to 90°. Advanced: toes to bar.",
+      alternatives: ["Captain's Chair Raise", "Lying Leg Raise"],
+    },
+    {
+      name: "Russian Twist",
+      muscleGroup: "Obliques",
+      difficulty: "beginner",
+      description: "Sit at 45°, rotate side to side holding a plate or medicine ball.",
+      alternatives: ["Cable Woodchop", "Oblique Crunch"],
+    },
+    {
+      name: "Ab Wheel Rollout",
+      muscleGroup: "Full Core",
+      difficulty: "advanced",
+      description: "Roll out to full extension, engage core to pull back up.",
+      alternatives: ["Plank", "Pike Plank"],
+    },
+  ],
+};
+
+export default exerciseLibrary;

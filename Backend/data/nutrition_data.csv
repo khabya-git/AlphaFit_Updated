@@ -1,0 +1,113 @@
+Name,Calories,Protein,Carbs,Fat
+Chapati,120,3,18,3
+Rice(1 cup),200,4,45,0.5
+Dal(1 cup),150,9,25,3
+Banana,105,1.3,27,0.3
+Apple,95,0.5,25,0.3
+Pizza(1 slice),285,12,36,10
+Burger,354,17,29,17
+Sandwich,250,10,30,8
+Milk(1 glass),103,8,12,2.5
+Egg(1 boiled),78,6,1,5
+Paneer(100g),265,18,6,20
+Salad(mixed veg bowl),80,3,15,0.5
+Tomato(1 medium),22,1,5,0.2
+Onion(1 medium),44,1,10,0.1
+Soya Bean(100g),446,36,30,20
+Peanut Butter(2 tbsp),190,8,7,16
+Chips(1 pack ~30g),160,2,15,10
+Oats(1 cup cooked),150,5,27,3
+Idli(1 piece),58,2,12,0.4
+Dosa(1 medium),168,3,30,4
+Poha(1 cup),180,4,26,6
+Maggi(1 pack),350,8,50,14
+Chicken Curry(1 cup),280,27,8,15
+Fish Fry(100g),200,22,0,12
+Tea(1 cup with milk & sugar),75,1,12,2
+Sprouts(1 cup mixed),100,7,20,1
+Coffee(1 cup with milk & sugar),80,1,12,2
+Chowmein(100g),475,8.1,73,15
+Pav Bhaji(1 serving),401,12,63,11
+Shahi Paneer(1 serving),351,10.4,11.9,29.2
+Butter Naan(1 piece),180,4,25,5
+Momos(1 cup),595,23.8,83.3,19
+Masala Maggi(200g),285,5.3,59,9.4
+Chole Kulche(1 serving),375,12.5,55,11
+Veg Biryani(1 serving),275,6.5,50,10
+Rajma(1 cup),215,15,40,0.9
+Bhindi Masala(1 cup),130,3,10,8
+Aloo Gobi(1 cup),140,4,15,7
+Paneer Butter Masala(1 cup),310,15,10,25
+Chicken Tikka(100g),190,22,4,7
+Tandoori Chicken(100g),180,24,3,5
+Samosa(1 piece),130,3,20,6
+Dhokla(1 piece),70,3,10,1
+Lassi(1 cup),150,5,15,7
+Pani Puri(6 pieces),200,5,30,6
+Kheer(1 cup),250,6,40,8
+Jalebi(100g),450,3,60,15
+Rasgulla(100g),220,5,50,6
+Gulab Jamun(1 piece),150,3,25,6
+Masala Dosa(1 piece),210,5,40,7
+Upma(1 cup),180,5,35,6
+Vada Pav(1 piece),280,7,35,12
+Chana Masala(1 cup),225,12,35,7
+Butter Chicken(1 cup),320,25,12,20
+Pesarattu(1 piece),180,7,30,5
+Hyderabadi Biryani (1 serving),350,10,50,12
+Lucknowi Kebab (100g),290,25,5,18
+Bengali Fish Curry (1 cup),320,28,8,15
+Gujarati Dhokla (1 piece),70,3,10,1
+Punjabi Makki Ki Roti (1 piece),110,3,18,4
+South Indian Sambhar (1 cup),130,7,20,2
+Kashmiri Rogan Josh (1 cup),350,30,5,24
+Maharashtrian Misal Pav (1 serving),450,15,60,20
+Tamil Nadu Rasam (1 cup),80,3,12,1
+Kerala Fish Moilee (1 cup),300,25,10,15
+Assamese Masor Tenga (1 cup),280,27,10,12
+Rajasthani Dal Baati (1 serving),400,10,50,15
+Goan Vindaloo (1 cup),330,25,12,18
+Andhra Gongura (1 cup),120,5,15,6
+Bihar Litti Chokha (1 serving),400,12,45,18
+Bhel Puri (1 plate),300,6,50,8
+Sev Puri (1 plate),280,5,45,7
+Dahi Puri (1 plate),260,4,40,6
+Raj Kachori (1 piece),350,7,55,10
+Aloo Tikki (1 piece),160,4,35,7
+Papdi Chaat (1 plate),300,5,50,8
+Kathi Roll (1 piece),400,12,45,18
+Dahi Bhalla (1 plate),280,5,40,7
+Chole Bhature (1 plate),450,15,55,20
+Kulcha (1 piece),160,6,35,8
+Tandoori Momos (6 pieces),350,20,45,12
+Chowmein Roll (1 piece),320,15,50,15
+Frankie (1 piece),300,10,40,14
+Dabeli (1 piece),250,6,40,12
+Pav Bhaji (1 serving),400,12,62,11
+Kaju Katli (100g),450,3,65,19
+Peda (1 piece),105,2,15,5
+Barfi (100g),380,5,55,15
+Laddu (1 piece),120,2,20,7
+Halwa (1 cup),350,4,50,20
+Rasmalai (2 pieces),250,8,30,10
+Sandesh (100g),220,6,25,9
+Mishti Doi (1 cup),160,5,30,7
+Kulfi (1 cup),350,6,45,20
+Falooda (1 glass),300,4,50,10
+Shrikhand (1 cup),280,7,35,15
+Payasam (1 cup),200,6,30,8
+Gajar Halwa (1 cup),350,3,50,20
+Banana,105,1.3,27,0.3
+Mango,150,1.4,35,0.6
+Orange,62,1.2,15.4,0.2
+Grapes,62,0.6,16,0.3
+Papaya,59,0.9,15,0.3
+Pineapple,82,0.9,21.7,0.2
+Watermelon,46,0.9,11.5,0.2
+Kiwi,42,0.8,10,0.4
+Guava,68,2.6,14,1
+Pear,57,0.4,15,0.1
+Cherry,77,1.6,19,0.2
+Strawberry,32,0.7,7.7,0.3
+Blueberry,84,1.1,21,0.5
+Pomegranate,83,1.7,19,1.2
