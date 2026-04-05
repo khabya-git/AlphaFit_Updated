@@ -20,21 +20,3 @@ export const API_PATHS = {
     UPLOAD_IMAGE: "/api/auth/upload-image",
   },
 };
-
-
-// import axios from "axios";
-
-// const instance = axios.create({
-//   baseURL: "http://localhost:8000/api", // backend root
-// });
-
-// // Automatically attach JWT token if available
-// instance.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`; // ✅ fixed backticks
-//   }
-//   return config;
-// });
-
-// export default instance;
