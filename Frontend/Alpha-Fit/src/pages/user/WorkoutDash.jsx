@@ -26,8 +26,8 @@ export default function WorkoutDashboard({ workout }) {
       
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Workout Analytics</h2>
-        <p className="text-sm font-medium text-gray-500">
+        <h2 className="text-2xl font-extrabold text-white mb-2 drop-shadow-lg" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>Workout Analytics</h2>
+        <p className="text-sm font-semibold text-white/80" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
           Track your weekly volume, consistency, and personal records.
         </p>
       </div>

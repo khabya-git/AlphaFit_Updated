@@ -47,6 +47,7 @@ export default function PoseDetectionPage() {
     stateRef.current = "idle";
     counterRef.current = 0;
     setCounter(0);
+    smoothedAngleRef.current = null;
 
     startTimeRef.current = Date.now();
 
@@ -66,6 +67,7 @@ export default function PoseDetectionPage() {
 
     setTimerRunning(false);
     setFeedback("Ready to track");
+    smoothedAngleRef.current = null;
   };
 
   const resetWorkout = () => {
@@ -95,132 +97,244 @@ export default function PoseDetectionPage() {
     });
   };
 
-  const processExercise = (keypoints) => {
-    if (!timerRunningRef.current) {
-      setFeedback("Start the timer to begin counting reps");
-      return;
+  // Min keypoint confidence required for a landmark to be trusted
+  const MIN_SCORE = 0.4;
+
+  // EMA smoother ref for the primary joint angle — filters single-frame noise
+  const smoothedAngleRef = useRef(null);
+  const ALPHA = 0.35; // smoothing factor: lower = smoother but laggier
+
+  // Prevents hammering setFeedback on every frame when message hasn't changed
+  const lastFeedbackRef = useRef("");
+  const giveFeedback = (msg) => {
+    if (msg !== lastFeedbackRef.current) {
+      lastFeedbackRef.current = msg;
+      setFeedback(msg);
     }
+  };
+
+  /**
+   * Returns the better side's keypoints map (left vs right) based on average score,
+   * then filters out any keypoint below MIN_SCORE so bad landmarks are never used.
+   */
+  const getBestSideKP = (keypoints) => {
     const kp = {};
     keypoints.forEach((k) => (kp[k.name] = k));
 
-    if (!kp.left_shoulder || !kp.left_elbow || !kp.left_wrist) return;
+    const sides = ["left", "right"];
+    let bestSide = "left";
+    let bestAvg = -1;
 
-    const elbowAngle = calculateAngle(
-      kp.left_shoulder,
-      kp.left_elbow,
-      kp.left_wrist,
-    );
+    for (const side of sides) {
+      const joints = [
+        kp[`${side}_shoulder`],
+        kp[`${side}_elbow`],
+        kp[`${side}_wrist`],
+      ].filter(Boolean);
+      if (joints.length === 0) continue;
+      const avg = joints.reduce((s, j) => s + (j.score || 0), 0) / joints.length;
+      if (avg > bestAvg) {
+        bestAvg = avg;
+        bestSide = side;
+      }
+    }
 
+    // Build a flattened "best" map with confidence-filtered entries
+    const out = {};
+    for (const [name, point] of Object.entries(kp)) {
+      if ((point.score || 0) >= MIN_SCORE) {
+        // Strip left/right prefix and remap to the chosen side
+        const generic = name.replace(/^left_|^right_/, "");
+        const canonical = `${bestSide}_${generic}`;
+        if (!out[canonical]) out[canonical] = point; // prefer chosen side
+        out[name] = point; // keep originals for cross-side checks
+      }
+    }
+    // Expose the chosen-side joints without prefix for clean access
+    for (const joint of ["shoulder", "elbow", "wrist", "hip", "knee", "ankle"]) {
+      const candidate = kp[`${bestSide}_${joint}`];
+      if (candidate && (candidate.score || 0) >= MIN_SCORE) {
+        out[joint] = candidate;
+      }
+    }
+    return { kp: out, side: bestSide };
+  };
+
+  const processExercise = (keypoints) => {
+    if (!timerRunningRef.current) {
+      giveFeedback("Start the timer to begin counting reps");
+      return;
+    }
+
+    const { kp, side } = getBestSideKP(keypoints);
     const currentExercise = exerciseRef.current;
 
+    // ── BICEP CURL ──────────────────────────────────────────────────────────
     if (currentExercise === "bicep_curl") {
-      const elbowTorsoDistance = Math.abs(kp.left_elbow.x - kp.left_hip.x);
-
-      if (elbowTorsoDistance > 80) {
-        setFeedback("Keep elbows close to body");
+      if (!kp.shoulder || !kp.elbow || !kp.wrist) {
+        giveFeedback("Position arm in view");
         return;
       }
+      const rawAngle = calculateAngle(kp.shoulder, kp.elbow, kp.wrist);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
 
-      if (elbowAngle > 160) {
+      // Only check elbow flare if hip is visible and trusted
+      if (kp.hip) {
+        const elbowFlare = Math.abs(kp.elbow.x - kp.hip.x);
+        if (elbowFlare > 90) {
+          giveFeedback("Keep elbow close to body");
+          return;
+        }
+      }
+
+      if (angle > 155) {
         stateRef.current = "down";
-        setFeedback("Curl Up");
-      } else if (stateRef.current === "down" && elbowAngle < 45) {
+        giveFeedback("Curl up ↑");
+      } else if (stateRef.current === "down" && angle < 50) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Good Curl");
+        giveFeedback("✓ Good rep!");
+      } else if (stateRef.current === "up" && angle > 80) {
+        giveFeedback("Lower slowly ↓");
       }
     }
 
+    // ── PUSH-UP ─────────────────────────────────────────────────────────────
     if (currentExercise === "pushup") {
-      const backAngle = calculateAngle(
-        kp.left_shoulder,
-        kp.left_hip,
-        kp.left_ankle,
-      );
-
-      if (backAngle < 150) {
-        setFeedback("Keep back straight");
+      if (!kp.shoulder || !kp.elbow || !kp.wrist) {
+        giveFeedback("Position arm in view");
         return;
       }
+      // Elbows must be visible — push-ups use arm angle primarily
+      const rawAngle = calculateAngle(kp.shoulder, kp.elbow, kp.wrist);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
 
-      if (elbowAngle > 165) {
+      if (kp.hip && kp.ankle) {
+        const backAngle = calculateAngle(kp.shoulder, kp.hip, kp.ankle);
+        if (backAngle < 145) {
+          giveFeedback("Keep back straight!");
+          return;
+        }
+      }
+
+      if (angle > 160) {
         stateRef.current = "up";
-        setFeedback("Lower chest");
-      } else if (stateRef.current === "up" && elbowAngle < 90) {
+        giveFeedback("Lower chest ↓");
+      } else if (stateRef.current === "up" && angle < 90) {
         stateRef.current = "down";
-        setFeedback("Push up");
-      } else if (stateRef.current === "down" && elbowAngle > 165) {
+        giveFeedback("Push up ↑");
+      } else if (stateRef.current === "down" && angle > 160) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Good Pushup");
+        giveFeedback("✓ Good push-up!");
       }
     }
 
+    // ── SHOULDER PRESS ──────────────────────────────────────────────────────
     if (currentExercise === "shoulder_press") {
-      if (elbowAngle < 90) {
+      if (!kp.shoulder || !kp.elbow || !kp.wrist) {
+        giveFeedback("Position arm in view");
+        return;
+      }
+      const rawAngle = calculateAngle(kp.shoulder, kp.elbow, kp.wrist);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
+
+      if (angle < 85) {
         stateRef.current = "down";
-        setFeedback("Press Up");
-      } else if (stateRef.current === "down" && elbowAngle > 165) {
+        giveFeedback("Press up ↑");
+      } else if (stateRef.current === "down" && angle > 160) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Full Extension");
+        giveFeedback("✓ Full extension!");
+      } else if (stateRef.current === "up") {
+        giveFeedback("Lower to ears ↓");
       }
     }
 
+    // ── TRICEP EXTENSION ────────────────────────────────────────────────────
     if (currentExercise === "tricep_extension") {
-      if (elbowAngle < 60) {
+      if (!kp.shoulder || !kp.elbow || !kp.wrist) {
+        giveFeedback("Position arm in view");
+        return;
+      }
+      const rawAngle = calculateAngle(kp.shoulder, kp.elbow, kp.wrist);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
+
+      if (angle < 65) {
         stateRef.current = "down";
-        setFeedback("Extend Arms");
-      } else if (stateRef.current === "down" && elbowAngle > 160) {
+        giveFeedback("Extend arms ↑");
+      } else if (stateRef.current === "down" && angle > 155) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Good Extension");
+        giveFeedback("✓ Good extension!");
       }
     }
 
+    // ── SQUAT ───────────────────────────────────────────────────────────────
     if (currentExercise === "squat") {
-      const kneeAngle = calculateAngle(
-        kp.left_hip,
-        kp.left_knee,
-        kp.left_ankle,
-      );
+      if (!kp.hip || !kp.knee || !kp.ankle) {
+        giveFeedback("Full legs must be in frame");
+        return;
+      }
+      const rawAngle = calculateAngle(kp.hip, kp.knee, kp.ankle);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
 
-      if (kneeAngle > 170) {
+      if (angle > 165) {
         stateRef.current = "up";
-        setFeedback("Lower Hips");
-      } else if (stateRef.current === "up" && kneeAngle < 95) {
+        giveFeedback("Lower hips ↓");
+      } else if (stateRef.current === "up" && angle < 100) {
         stateRef.current = "down";
-        setFeedback("Drive Up");
-      } else if (stateRef.current === "down" && kneeAngle > 170) {
+        giveFeedback("Drive up ↑");
+      } else if (stateRef.current === "down" && angle > 165) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Good Squat");
+        giveFeedback("✓ Good squat!");
       }
     }
 
+    // ── LUNGE ───────────────────────────────────────────────────────────────
     if (currentExercise === "lunge") {
-      const kneeAngle = calculateAngle(
-        kp.left_hip,
-        kp.left_knee,
-        kp.left_ankle,
-      );
+      if (!kp.hip || !kp.knee || !kp.ankle) {
+        giveFeedback("Full legs must be in frame");
+        return;
+      }
+      const rawAngle = calculateAngle(kp.hip, kp.knee, kp.ankle);
+      smoothedAngleRef.current = smoothedAngleRef.current === null
+        ? rawAngle
+        : ALPHA * rawAngle + (1 - ALPHA) * smoothedAngleRef.current;
+      const angle = smoothedAngleRef.current;
 
-      if (kneeAngle > 165) {
+      if (angle > 160) {
         stateRef.current = "up";
-        setFeedback("Step Forward");
-      } else if (stateRef.current === "up" && kneeAngle < 95) {
+        giveFeedback("Step forward ↓");
+      } else if (stateRef.current === "up" && angle < 95) {
         stateRef.current = "down";
-        setFeedback("Push Back");
-      } else if (stateRef.current === "down" && kneeAngle > 165) {
+        giveFeedback("Push back up ↑");
+      } else if (stateRef.current === "down" && angle > 160) {
         stateRef.current = "up";
         counterRef.current += 1;
         setCounter(counterRef.current);
-        setFeedback("Good Lunge");
+        giveFeedback("✓ Good lunge!");
       }
     }
   };
@@ -328,6 +442,7 @@ export default function PoseDetectionPage() {
             value={exercise}
             onChange={(e) => {
               setExercise(e.target.value);
+              smoothedAngleRef.current = null;
               resetWorkout();
             }}
             className="bg-gray-50 border border-gray-200 text-gray-700 p-3 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-semibold cursor-pointer"

@@ -82,12 +82,12 @@ export default function ChallengesPage() {
 
       {/* CHALLENGES */}
       <section>
-        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-6 gap-4 border-b border-gray-200 pb-4">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <LuFlame className="text-orange-500" /> Active Goals
+        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-6 gap-4 pb-4">
+          <h3 className="text-sm font-bold text-white flex items-center gap-2 drop-shadow" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+            <LuFlame className="text-orange-400" /> Active Goals
           </h3>
 
-          <div className="flex bg-gray-100 p-1 rounded-lg">
+          <div className="flex bg-white/20 backdrop-blur-sm border border-white/30 p-1 rounded-lg">
             {["daily", "weekly", "monthly"].map((period) => (
               <button
                 key={period}
@@ -95,7 +95,7 @@ export default function ChallengesPage() {
                 className={`px-4 py-2 text-xs font-semibold capitalize rounded-md transition-all ${
                   selectedPeriod === period
                     ? "bg-white text-blue-600 shadow-sm"
-                    : "text-gray-500 hover:text-gray-800"
+                    : "text-white/80 hover:text-white"
                 }`}
               >
                 {period}

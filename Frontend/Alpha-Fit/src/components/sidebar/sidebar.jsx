@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   LuTrendingUp,
   LuCamera,
@@ -10,6 +11,7 @@ import {
   LuLogOut,
 } from "react-icons/lu";
 import UserMenu from "./UserMenu";
+import { UserContext } from "../../context/userContext";
 
 const Sidebar = ({
   user,
@@ -22,6 +24,7 @@ const Sidebar = ({
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+  const { cleanUser } = useContext(UserContext);
 
   const menuItems = [
     { id: "dashboard", label: "DASHBOARD", icon: LuTrendingUp },
@@ -50,8 +53,8 @@ const Sidebar = ({
   }, [showMenu]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    cleanUser();
+    toast.success("Successfully logged out");
     navigate("/");
   };
 

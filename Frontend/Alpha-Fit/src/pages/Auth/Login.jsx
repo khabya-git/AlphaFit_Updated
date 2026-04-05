@@ -47,10 +47,10 @@ const Login = () => {
       if (token) {
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
-        updateUser(user);
+        updateUser({ user, token });
 
         toast.success("Welcome back!");
-        navigate("/user/dashboard");
+        navigate("/user/dashboard", { replace: true });
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Login failed. Please try again.");
@@ -79,7 +79,7 @@ const Login = () => {
       if (token) {
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
-        updateUser(user);
+        updateUser({ user, token });
 
         toast.success("Google sign-in successful!");
         if (response.data.isNewUser) {
@@ -158,6 +158,21 @@ const Login = () => {
                    {showPw ? "Hide" : "Show"}
                  </button>
                </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors cursor-pointer"
+                  defaultChecked
+                />
+                <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Remember me</span>
+              </label>
+              <Link to="/forgot-password" className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors">
+                Forgot password?
+              </Link>
+            </div>
             </div>
 
             {/* Normal Login Button */}

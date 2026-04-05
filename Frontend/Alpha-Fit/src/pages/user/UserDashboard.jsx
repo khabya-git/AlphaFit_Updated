@@ -195,9 +195,31 @@ export default function UserDashboard() {
     "progress": "Progress & Trends"
   };
 
+  // Rotate gym background images based on active page
+  const pageBgImages = {
+    "dashboard":          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80&fit=crop",
+    "nutrition":          "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80&fit=crop",
+    "pose-detection":     "https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=1920&q=80&fit=crop",
+    "workouts":           "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=1920&q=80&fit=crop",
+    "workouts-analytics": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=1920&q=80&fit=crop",
+    "challenges":         "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=1920&q=80&fit=crop",
+    "progress":           "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&q=80&fit=crop",
+    "profile":            "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1920&q=80&fit=crop",
+  };
+  const currentBg = pageBgImages[activePage] || pageBgImages["dashboard"];
+
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
-      
+    <div
+      className="flex h-screen text-gray-900 overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900"
+      style={{
+        backgroundImage: `url('${currentBg}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Fixed overlay — always covers full viewport, no scroll bleed-through */}
+      <div className="fixed inset-0 bg-white/[0.30] pointer-events-none z-0" />
+
       {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
         <div 
@@ -219,8 +241,8 @@ export default function UserDashboard() {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 overflow-y-auto relative z-10 scrollbar-hide bg-gray-50 w-full">
-        <div className="p-4 sm:p-6 md:p-10 lg:p-12 max-w-7xl mx-auto min-h-full flex flex-col">
+      <main className="flex-1 overflow-y-auto relative z-10 scrollbar-hide w-full">
+        <div className="relative z-10 p-4 sm:p-6 md:p-10 lg:p-12 max-w-7xl mx-auto min-h-full flex flex-col">
           
           {/* MOBILE HEADER (Visible only on small screens) */}
           <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-gray-200">
@@ -234,20 +256,20 @@ export default function UserDashboard() {
           </div>
 
           {/* SIMPLIFIED CLEAN HEADER */}
-          <div className="flex justify-between items-end mb-8 lg:mb-10 pb-6 border-b border-gray-200">
+          <div className="flex justify-between items-end mb-8 lg:mb-10 pb-6 border-b border-white/30">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
+              <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow-lg" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
                 {pageTitles[activePage] || "Dashboard"}
               </h1>
-              <p className="text-sm font-medium text-gray-500 mt-2">
+              <p className="text-sm font-semibold text-white/90 mt-2 drop-shadow" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
                 Welcome back, {user?.name || "User"}! Let's hit your goals today.
               </p>
             </div>
             <div className="text-right hidden md:block">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-white/70 uppercase tracking-wider">
                 Current Time
               </p>
-              <p className="text-sm font-bold text-gray-700 mt-1">
+              <p className="text-sm font-bold text-white mt-1 drop-shadow" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
                 {new Date().toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -259,7 +281,7 @@ export default function UserDashboard() {
           <div className="flex-1">{renderPageContent()}</div>
 
           {/* FOOTER */}
-          <footer className="mt-12 pt-6 border-t border-gray-200 flex justify-between items-center text-gray-400 text-xs font-medium">
+          <footer className="mt-12 pt-6 border-t border-white/30 flex justify-between items-center text-white/60 text-xs font-medium">
             <span>
               AlphaFit v1.0.4
             </span>

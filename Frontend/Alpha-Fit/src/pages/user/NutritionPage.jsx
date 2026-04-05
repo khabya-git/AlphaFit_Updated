@@ -19,6 +19,31 @@ const extractBaseUnit = (name) => {
   return match ? match[1] : "1 serving / unit";
 };
 
+const getEstimatedWeight = (name) => {
+  const n = (name || "").toLowerCase();
+  
+  if (n.includes("100g") || n.includes("grams")) return null;
+  
+  // Specific Overrides
+  if (n.includes("poha")) return "~100g";
+  if (n.includes("biryani")) return "~250g";
+  if (n.includes("pizza") || n.includes("slice")) return "~40g";
+  if (n.includes("burger")) return "~150g";
+  if (n.includes("sandwich")) return "~120g";
+  
+  // Generic matchers
+  if (n.includes("cup")) return "~150g";
+  if (n.includes("serving")) return "~200g";
+  if (n.includes("piece") || n.includes("pc")) return "~50g";
+  if (n.includes("glass")) return "~250ml";
+  if (n.includes("tbsp")) return "~15g";
+  if (n.includes("tsp")) return "~5g";
+  
+  if (!name.includes("(")) return "~100g"; // Assumed default serving
+  
+  return null;
+};
+
 export default function NutritionPage() {
   const navigate= useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -191,9 +216,14 @@ export default function NutritionPage() {
                 
                 {/* DISPLAY */}
                 <div className="flex-1 flex flex-col md:flex-row md:items-center gap-3 md:gap-8">
-                  <h3 className="font-bold text-gray-900 text-sm w-48 truncate group-hover:text-blue-600 transition-colors">
-                    {cleanFoodName(food.name)}
-                  </h3>
+                  <div className="w-48 truncate">
+                    <h3 className="font-bold text-gray-900 text-sm group-hover:text-blue-600 transition-colors truncate">
+                      {cleanFoodName(food.name)}
+                    </h3>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase mt-0.5 tracking-wider">
+                       {extractBaseUnit(food.name)} {getEstimatedWeight(food.name) && `(${getEstimatedWeight(food.name)})`}
+                    </p>
+                  </div>
                   
                   <div className="flex flex-wrap items-center gap-4 md:border-l md:border-gray-100 md:pl-6">
                     {/* CALORIES */}
@@ -256,8 +286,13 @@ export default function NutritionPage() {
             <h2 className="text-xl font-extrabold text-gray-900 mb-1 pr-8">
               {cleanFoodName(selectedFoodForQuantity.name)}
             </h2>
-            <p className="text-xs font-semibold text-gray-500 mb-6">
+            <p className="text-xs font-semibold text-gray-500 mb-6 flex items-center gap-2">
               Base: {extractBaseUnit(selectedFoodForQuantity.name)}
+              {getEstimatedWeight(selectedFoodForQuantity.name) && (
+                <span className="bg-gray-50 border border-gray-100 text-gray-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide">
+                  {getEstimatedWeight(selectedFoodForQuantity.name)}
+                </span>
+              )}
             </p>
             
             {/* Dynamic macros preview */}
@@ -282,16 +317,21 @@ export default function NutritionPage() {
 
             <div className="mb-8">
               <label className="text-sm font-bold text-gray-700 mb-2 block">
-                Number of Servings
+                Quantity
               </label>
-              <input
-                type="number"
-                min="1"
-                step="1"
-                value={quantityInput}
-                onChange={(e) => setQuantityInput(e.target.value === "" ? "" : parseInt(e.target.value, 10) || 0)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-900 font-bold p-4 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-lg transition-all"
-              />
+              <div className="flex bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-500 transition-all">
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={quantityInput}
+                  onChange={(e) => setQuantityInput(e.target.value === "" ? "" : parseInt(e.target.value, 10) || 0)}
+                  className="w-full bg-transparent text-gray-900 font-bold px-4 py-3.5 focus:outline-none text-lg"
+                />
+                <div className="flex items-center px-5 bg-gray-100 border-l border-gray-200 text-sm font-extrabold text-blue-700 whitespace-nowrap select-none">
+                  × {extractBaseUnit(selectedFoodForQuantity.name)}
+                </div>
+              </div>
             </div>
             <button
               onClick={handleConfirmAdd}
