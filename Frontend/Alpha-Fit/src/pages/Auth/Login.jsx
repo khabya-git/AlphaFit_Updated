@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { UserContext } from "../../context/userContext";
@@ -34,8 +34,8 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/login",
+      const response = await axiosInstance.post(
+        "/auth/login",
         {
           email,
           password,
@@ -65,8 +65,8 @@ const Login = () => {
       setLoading(true);
       const decoded = jwtDecode(credentialResponse.credential);
 
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/google",
+      const response = await axiosInstance.post(
+        "/auth/google",
         {
           name: decoded.name,
           email: decoded.email,

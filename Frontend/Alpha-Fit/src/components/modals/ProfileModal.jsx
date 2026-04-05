@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/userContext";
+import axiosInstance from "../../utils/axiosInstance";
 import {
   LuUser, LuMail, LuGraduationCap, LuCalendar,
   LuRuler, LuDumbbell, LuChevronLeft, LuPencil, LuActivity, LuTarget, LuFlame
@@ -14,15 +15,9 @@ const ProfilePage = ({ onBack, onOpenUpdate }) => {
     const fetchLatestMeasurement = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return;
-        const response = await fetch("http://localhost:8000/api/measurements/latest", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setMeasurement(data);
+        const response = await axiosInstance.get("/measurements/latest");
+        if (response.data) {
+          setMeasurement(response.data);
         }
       } catch (err) {
         console.error("Failed to fetch user measurements", err);

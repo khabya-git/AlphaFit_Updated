@@ -14,14 +14,9 @@ const UpdateModal = ({ onClose }) => {
     const fetchLatestMeasurement = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return;
-        const response = await fetch("http://localhost:8000/api/measurements/latest", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
+        const response = await axiosInstance.get("/measurements/latest");
+        if (response.data) {
+          const data = response.data;
           setMeasurement(data);
           // Only override if we don't already have them in the primary formData
           setFormData(prev => ({

@@ -489,6 +489,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LuUser, LuUpload, LuTrash } from "react-icons/lu";
+import axiosInstance from "../../../src/utils/axiosInstance";
 
 export default function ProfilePhotoSelector({
   image,
@@ -576,19 +577,13 @@ export default function ProfilePhotoSelector({
       const formData = new FormData();
       formData.append("avatar", image);
 
-      const res = await fetch("http://localhost:8000/api/upload", {
-        method: "POST",
-        headers: authToken
-          ? { Authorization: `Bearer ${authToken}` }
-          : undefined,
-        body: formData,
+      const res = await axiosInstance.post("/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      if (!res.ok) {
-        throw new Error(`Upload failed (${res.status})`);
-      }
-
-      const data = await res.json();
+      const data = res.data;
       console.log("Upload response:", data);
 
       // const newUrl =

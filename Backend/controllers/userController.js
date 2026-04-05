@@ -115,7 +115,10 @@ const uploadAvatar = async (req, res) => {
     //   return res.status(401).json({ message: "Unauthorized: user not found" });
     // }
 
-    const avatarUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+    const baseUrl = req.get("host").includes("localhost") 
+      ? "http://localhost:8000" 
+      : `https://${req.get("host")}`;
+    const avatarUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
