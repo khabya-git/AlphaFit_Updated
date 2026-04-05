@@ -13,10 +13,14 @@ app.set("etag", false);
 
 app.use(morgan("dev"));
 
-// CORS
+// CORS - Allow both local development and live Vercel production UI automatically
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", 
+      "https://alpha-fit-updated.vercel.app",
+      process.env.FRONTEND_URL
+    ].filter(Boolean),
     credentials: true,
   })
 );
