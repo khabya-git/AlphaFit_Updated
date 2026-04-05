@@ -62,6 +62,16 @@ export default function SignUp() {
       Math.max(0, pwScore - 1)
     ] || "Very Weak";
 
+  const isRegistering = React.useRef(false);
+
+  // Prevent users who are already logged in from staying on signup page,
+  // but DON'T kick them out if they are actively in the middle of signing up!
+  useEffect(() => {
+    if (context?.user && !context?.loading && !isRegistering.current) {
+      navigate("/user/dashboard", { replace: true });
+    }
+  }, [context?.user, context?.loading, navigate]);
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -91,6 +101,7 @@ export default function SignUp() {
       });
 
       if (res.data?.token) {
+        isRegistering.current = true; // Block the auto-redirect to dashboard
         localStorage.setItem("token", res.data.token);
         updateUser(res.data.user || res.data);
         toast.success("Account created successfully! Welcome.");
@@ -118,6 +129,7 @@ export default function SignUp() {
       });
 
       if (res.data?.token) {
+        isRegistering.current = true; // Block the auto-redirect to dashboard
         setToken(res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user || res.data));
         updateUser(res.data.user || res.data);

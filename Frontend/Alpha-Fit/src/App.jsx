@@ -31,7 +31,7 @@ export default function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
+          <Route path="/signup" element={<SignUp />} />
 
           {/* Unrestricted Route: Landing Page */}
           <Route path="/" element={<Home />} />
