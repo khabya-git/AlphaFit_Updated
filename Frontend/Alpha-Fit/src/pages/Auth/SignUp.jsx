@@ -105,7 +105,7 @@ export default function SignUp() {
         localStorage.setItem("token", res.data.token);
         updateUser(res.data.user || res.data);
         toast.success("Account created successfully! Welcome.");
-        window.location.href = "/user/measurement-form";
+        navigate("/user/measurement-form", { replace: true });
       }
     } catch (err) {
       const msg =
@@ -136,9 +136,9 @@ export default function SignUp() {
 
         toast.success("Google sign-in successful!");
         if (res.data.isNewUser) {
-          window.location.href = "/user/measurement-form";
+          navigate("/user/measurement-form", { replace: true });
         } else {
-          window.location.href = "/user/dashboard";
+          navigate("/user/dashboard", { replace: true });
         }
       }
     } catch (err) {
