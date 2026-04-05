@@ -33,9 +33,11 @@ export default function App() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
 
+          {/* Unrestricted Route: Landing Page */}
+          <Route path="/" element={<Home />} />
+
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Home />} />
             <Route path="/user/dashboard" element={<UserDashboard />} />
             <Route path="/user/measurement-form" element={<MeasurementForm />} />
             <Route path="/user/pose-detection" element={<PoseDetectionPage />} />
