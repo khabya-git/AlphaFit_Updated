@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import axiosInstance from "../../utils/axiosInstance";
 import { LuUser, LuRuler, LuActivity, LuTarget, LuFlame, LuArrowRight, LuDumbbell } from "react-icons/lu";
 
 const GENDER_OPTIONS = [
@@ -121,30 +122,25 @@ export default function MeasurementForm() {
       return;
     }
     setLoading(true);
-    let hCm = parseFloat(formData.height);
-    let wKg = parseFloat(formData.weight);
-    if (formData.heightUnit === "in") hCm *= 2.54;
-    if (formData.weightUnit === "lb") wKg *= 0.453592;
+    let heightCm = parseFloat(formData.height);
+    let weightKg = parseFloat(formData.weight);
+    if (formData.heightUnit === "in") heightCm *= 2.54;
+    if (formData.weightUnit === "lb") weightKg *= 0.453592;
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/measurements", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...formData, height: hCm, weight: wKg }),
+      await axiosInstance.post("/measurements", {
+        ...formData,
+        height: heightCm,
+        weight: weightKg,
       });
-      if (response.ok) {
-        toast.success("BIO-DATA SYNCED");
-        setTimeout(() => navigate("/"), 1000);
-      } else {
-        const data = await response.json();
-        toast.error(data.message || "SYNC FAILED");
-      }
-    } catch (err) { toast.error("CONNECTION ERROR"); } 
-    finally { setLoading(false); }
+      
+      toast.success("BIO-DATA SYNCED SUCCESSFULLY");
+      setTimeout(() => navigate("/user/dashboard"), 1000);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "SYNC FAILED");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const ErrorLabel = ({ field }) =>
